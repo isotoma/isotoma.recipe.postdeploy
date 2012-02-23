@@ -7,11 +7,12 @@ system like Yaybu, Puppet or Chef.
 
 It takes a template Yaybu configuration and allows you to inject settings from
 your buildout - so the configuration is configured for that one particualar
-deployment. It creates a ``bin/postdeploy`` wrapper and installs Yaybu like any
-other package in your buildout.
+deployment. It creates a ``bin/postdeploy`` that you can run with sudo after
+running buildout.
 
 When you graduate to server-wide configuration management you can opt to keep
-your post-deployment configuration with your buildout.
+your post-deployment configuration with your buildout and just call
+``postdeploy`` from your main configuration management tool.
 
 
 Mandatory Parameters
@@ -24,6 +25,11 @@ template
 
 Optional Parameters
 -------------------
+
+executable
+    A python executable to use. Defaults to the same one used to invoke
+    buildout. This is to support Python 2.4 buildouts as Yaybu requires 2.6 or
+    2.7.
 
 
 Repository
