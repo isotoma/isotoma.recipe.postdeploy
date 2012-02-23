@@ -42,7 +42,7 @@ def expand(argv, config, searchpath):
     opts.resume = False
     opts.no_resume = False
     opts.user = "root"
-    opts.host = ""
+    opts.host = None
     opts.ypath = searchpath
     opts.simulate = False
     opts.env_passthrough = []
@@ -58,6 +58,10 @@ def expand(argv, config, searchpath):
 
 
 def _do(argv, config, searchpath, simulate=True):
+    if os.getuid() != 0:
+        command = ["sudo"] + sys.argv
+        os.execvp(command[0], command)
+
     p = optparse.OptionParser()
     p.add_option("-v", "--verbose", default=2, action="count", help="Write additional informational messages to the console log. repeat for even more verbosity.")
     p.add_option("--resume", default=False, action="store_true", help="Resume from saved events if terminated abnormally")
@@ -66,6 +70,10 @@ def _do(argv, config, searchpath, simulate=True):
 
     opts.simulate = simulate
     opts.ypath = searchpath
+
+    opts.user = "root"
+    opts.host = None
+    opts.env_passthrough = []
 
     r = runner.Runner()
     ctx = runcontext.RunContext(config, opts)
