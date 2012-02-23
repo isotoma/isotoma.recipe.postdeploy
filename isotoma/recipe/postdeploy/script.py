@@ -17,7 +17,7 @@ This is an alternative "runner" that strips out options from core Yaybu
 that don't make sense.
 """
 
-
+import sys
 import os
 import optparse
 import yay
@@ -36,8 +36,16 @@ def version(argv, config, searchpath):
 
 def expand(argv, config, searchpath):
     p = optparse.OptionParser()
-    parser.add_option("-v", "--verbose", default=2, action="count",  help="Write additional informational messages to the console log. repeat for even more verbosity.")
+    p.add_option("-v", "--verbose", default=2, action="count",  help="Write additional informational messages to the console log. repeat for even more verbosity.")
     opts, args = p.parse_args()
+
+    opts.resume = False
+    opts.no_resume = False
+    opts.user = "root"
+    opts.host = ""
+    opts.ypath = searchpath
+    opts.simulate = False
+    opts.env_passthrough = []
 
     ctx = runcontext.RunContext(config, opts)
     cfg = ctx.get_config().get()
@@ -49,11 +57,11 @@ def expand(argv, config, searchpath):
     return 0
 
 
-def _do(argv, config, searchpath, simulate=True)
+def _do(argv, config, searchpath, simulate=True):
     p = optparse.OptionParser()
-    parser.add_option("-v", "--verbose", default=2, action="count", help="Write additional informational messages to the console log. repeat for even more verbosity.")
-    parser.add_option("--resume", default=False, action="store_true", help="Resume from saved events if terminated abnormally")
-    parser.add_option("--no-resume", default=False, action="store_true", help="Clobber saved event files if present and do not resume")
+    p.add_option("-v", "--verbose", default=2, action="count", help="Write additional informational messages to the console log. repeat for even more verbosity.")
+    p.add_option("--resume", default=False, action="store_true", help="Resume from saved events if terminated abnormally")
+    p.add_option("--no-resume", default=False, action="store_true", help="Clobber saved event files if present and do not resume")
     opts, args = p.parse_args()
 
     opts.simulate = simulate
@@ -72,12 +80,15 @@ def apply(argv, config, searchpath):
     return _do(argv, config, searchpath, simulate=False)
 
 
-def main(config, searchpath, argv=sys.argv):
+def main(config, searchpath, argv=None):
+    if not argv:
+        argv = sys.argv[1:]
+
     if len(argv) < 1:
         print "expand, simulate or apply?"
         sys.exit(1)
 
-    subcommand = argv[1]
+    subcommand = argv[0]
     argv = argv[1:]
 
     funcs = dict(
@@ -87,9 +98,9 @@ def main(config, searchpath, argv=sys.argv):
         version = version,
         )
 
-    if subcommand in funcs:
+    if not subcommand in funcs:
         print "%s is not a valid subcommand" % subcommand
         sys.exit(1)
 
-    return funcs(subcommand)(argv, config, searchpath)
+    return funcs[subcommand](argv, config, searchpath)
 

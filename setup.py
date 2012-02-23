@@ -35,7 +35,7 @@ setup(
     ],
     entry_points = {
         "zc.buildout": [
-            "default = isotoma.recipe.postdeploy:PostDeploy",
+            "default = isotoma.recipe.postdeploy.recipe:PostDeploy",
         ],
     }
 )

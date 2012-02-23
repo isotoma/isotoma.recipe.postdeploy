@@ -14,6 +14,7 @@
 
 import sys, os
 from jinja2 import Environment, PackageLoader, ChoiceLoader, FunctionLoader, FileSystemLoader
+import zc.buildout
 import missingbits
 
 
@@ -24,7 +25,6 @@ class PostDeploy(object):
         self.name = name
         self.options = options
 
-        options.setdefault("template", sibpath(self.default_template))
         options.setdefault("executable", sys.executable)
 
         self.partsdir = os.path.join(buildout['buildout']['parts-directory'], name)
@@ -46,6 +46,7 @@ class PostDeploy(object):
             self.buildout["buildout"]["develop-eggs-directory"],
             self.buildout["buildout"]["eggs-directory"],
             ]
+        dest = self.buildout["buildout"]["eggs-directory"]
         dependencies = ["Yaybu", "isotoma.recipe.postdeploy"]
 
         params = [
@@ -54,8 +55,8 @@ class PostDeploy(object):
             ]
         args = ",".join(params)
 
-        ws = zc.buildout.easy_install.install(dependencies, options['executable'], egg_paths)
-        zc.buildout.easy_install.scripts([(self.name, "isotoma.recipe.postdeploy.script", "main")], ws, options['executable'], path, arguments=args)
+        ws = zc.buildout.easy_install.install(dependencies, dest, executable=self.options['executable'], path=egg_paths)
+        zc.buildout.easy_install.scripts([(self.name, "isotoma.recipe.postdeploy.script", "main")], ws, self.options['executable'], path, arguments=args)
         self.options.created(os.path.join(path, self.name))
 
     def install(self):
