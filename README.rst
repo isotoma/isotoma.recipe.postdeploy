@@ -37,6 +37,7 @@ history.track
     removed from buildout.
 
     For example::
+
         [buildout]
         parts =
             ${parts:apache}
