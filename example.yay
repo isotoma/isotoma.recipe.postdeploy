@@ -2,5 +2,5 @@
 
 resources.append:
     - File:
-        name: /etc/{{ hello }}
+        name: /etc/${buildout.postdeploy.hello}
 

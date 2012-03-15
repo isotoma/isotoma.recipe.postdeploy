@@ -86,7 +86,7 @@ def _do(argv, config, searchpath, simulate=True):
 
     r = runner.Runner()
     ctx = runcontext.RunContext(None, opts)
-    ctx.set_confnig(cfg)
+    ctx.set_config(c)
     return r.run(ctx)
 
 

@@ -26,6 +26,10 @@ config
 Optional Parameters
 -------------------
 
+searchpath
+    A set of directories or URLs to search for assets needed to full configure
+    this site.
+
 executable
     A python executable to use. Defaults to the same one used to invoke
     buildout. This is to support Python 2.4 buildouts as Yaybu requires 2.6 or

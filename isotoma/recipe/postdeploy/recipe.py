@@ -26,6 +26,7 @@ class PostDeploy(object):
         self.options = options
 
         options.setdefault("executable", sys.executable)
+        options.setdefault("searchpath", "\n.")
 
         self.partsdir = os.path.join(buildout['buildout']['parts-directory'], name)
         self.buildoutyay = os.path.join(self.partsdir, "buildout.yay")
@@ -47,9 +48,12 @@ class PostDeploy(object):
         dest = self.buildout["buildout"]["eggs-directory"]
         dependencies = ["Yaybu", "isotoma.recipe.postdeploy"]
 
+        searchpath = self.options.get_list("searchpath") + [self.partsdir]
+        config = [self.buildoutyay, self.options['config']]
+
         params = [
-            "[%s]" % ",".join("'%s'" % c for c in [self.buildoutyay,self.options['config']]),
-            "['%s']" % self.partsdir,
+            "[%s]" % ",".join("'%s'" % c for c in config),
+            "[%s]" % ",".join("'%s'" % s for s in searchpath),
             ]
         args = ",".join(params)
 

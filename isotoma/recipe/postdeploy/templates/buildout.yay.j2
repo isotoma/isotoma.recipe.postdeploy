@@ -1,14 +1,16 @@
-{% for part in buildout.keys() -%}
-{{ part }}:
-    {% for key in buildout[part] -%}
-    {% if '\n' in buildout[part][key] -%}
-    {{ key }}:
-        {%- for itm in buildout[part].get_list(key) %}
-        - {{ itm }}
-        {%- endfor %}
-    {% else -%}
-    {{ key }}: {{ buildout[part][key] }}
-    {% endif -%}
-    {% endfor %}
+buildout:
+{% for part in buildout.keys() %}
 
-{% endfor %}
+    {{ part }}:
+        {% for key in buildout[part] -%}
+        {% if '\n' in buildout[part][key] -%}
+        {{ key|replace(".","_") }}:
+            {%- for itm in buildout[part].get_list(key) %}
+            - {{ itm }}
+            {%- endfor %}
+        {% else -%}
+        {{ key|replace(".","_") }}: {{ buildout[part][key] }}
+        {% endif -%}
+        {% endfor %}
+
+{%- endfor %}
