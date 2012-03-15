@@ -4,4 +4,5 @@ develop-eggs/
 eggs/
 isotoma.recipe.postdeploy.egg-info/
 parts/
+var/
 *.pyc
