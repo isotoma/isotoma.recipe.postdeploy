@@ -1,0 +1,15 @@
+history:
+    {%- for k,v in history.items() %}
+    {{ k }}:
+        {%- for k, v in v.items() %}
+        {%- if not v %}
+        {{ k }}: []
+        {%- else %}
+        {{ k }}:
+          {%- for i in v %}
+          - {{ i }}
+          {% endfor %}
+        {% endif %}
+        {% endfor %}
+    {% endfor %}
+

@@ -17,6 +17,7 @@ from jinja2 import Environment, PackageLoader, ChoiceLoader, FunctionLoader, Fil
 import zc.buildout
 import missingbits
 
+from isotoma.recipe.postdeploy.history import get_values_removed_from_lists
 
 class PostDeploy(object):
 
@@ -27,9 +28,24 @@ class PostDeploy(object):
 
         options.setdefault("executable", sys.executable)
         options.setdefault("searchpath", "\n.")
+        options.setdefault("history.yay", os.path.join(buildout['buildout']['directory'], 'var', '%s-history.yay' % self.name))
+        options.setdefault("history.db", os.path.join(buildout['buildout']['directory'], 'var', '%s-history.db' % self.name))
 
         self.partsdir = os.path.join(buildout['buildout']['parts-directory'], name)
         self.buildoutyay = os.path.join(self.partsdir, "buildout.yay")
+
+    def write_removed_yay(self):
+        removed = get_values_removed_from_lists(
+            self.options['history.db'],
+            self.buildout,
+            self.options.get_list("history.track"),
+            )
+
+        loader = PackageLoader("isotoma.recipe.postdeploy", "templates")
+        template = Environment(loader=loader).get_template("history.yay.j2")
+
+        open(self.options['history.yay'], "w").write(template.render(history=removed))
+        self.options.created(self.options['history.yay'])
 
     def write_buildout_yay(self):
         """ Write out a buildout.yay based on the current buildout """
@@ -62,10 +78,16 @@ class PostDeploy(object):
         self.options.created(os.path.join(path, self.name))
 
     def install(self):
+        for opt in ('history.db', 'history.yay'):
+            dirname = os.path.dirname(self.options[opt])
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+
         if not os.path.exists(self.partsdir):
             os.makedirs(self.partsdir)
         self.options.created(self.partsdir)
 
+        self.write_removed_yay()
         self.write_buildout_yay()
         self.create_bin()
 
