@@ -12,8 +12,8 @@ def get_values_removed_from_lists(path, buildout, keys):
 	# so we know about all items that were ever in the list
         current = set(buildout[p].get_list(k))
         old = set(current)
-        if store.has_key(k):
-            old += store[key]
+        if store.has_key(key):
+            old = old.union(store[key])
 
         store[key] = old
 
