@@ -28,7 +28,16 @@ class PostDeploy(object):
         options.setdefault("executable", sys.executable)
 
         self.partsdir = os.path.join(buildout['buildout']['parts-directory'], name)
+        self.buildoutyay = os.path.join(self.partsdir, "buildout.yay")
         self.config = os.path.join(self.partsdir, "postdeploy.yay")
+
+    def write_buildout_yay(self):
+        """ Write out a buildout.yay based on the current buildout """
+        loader = PackageLoader("isotoma.recipe.postdeploy", "templates")
+        template = Environment(loader=loader).get_template("buildout.yay.j2")
+
+        open(self.buildoutyay, "w").write(template.render(self.buildout))
+        self.options.created(self.buildoutyay)
 
     def write_config(self):
         """ Write the config out, using the jinja2 templating method """
@@ -64,6 +73,7 @@ class PostDeploy(object):
             os.makedirs(self.partsdir)
         self.options.created(self.partsdir)
 
+        self.write_buildout_yay()
         self.write_config()
         self.create_bin()
 

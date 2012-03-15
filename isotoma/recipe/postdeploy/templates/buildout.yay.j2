@@ -1,0 +1,14 @@
+{% for part in buildout %}
+{{ part }}:
+    {% for key in buildout[part] %}
+    {% if '\n' in buildout[part][key] %}
+    {{ key }}:
+        {% for itm in buildout[part].as_list(key) -%}
+        - {{ itm }}
+        {% endfor -%}
+    {% else %}
+    {{ key }}: {{ buildout[part][key] }}
+    {% endif %}
+    {% endfor %}
+
+{% endfor %}
