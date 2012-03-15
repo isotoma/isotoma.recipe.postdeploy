@@ -65,7 +65,7 @@ class PostDeploy(object):
         dependencies = ["Yaybu", "isotoma.recipe.postdeploy"]
 
         searchpath = self.options.get_list("searchpath") + [self.partsdir]
-        config = [self.buildoutyay, self.options['config']]
+        config = [self.buildoutyay, self.options['history.yay'], self.options['config']]
 
         params = [
             "[%s]" % ",".join("'%s'" % c for c in config),
