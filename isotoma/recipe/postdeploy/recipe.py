@@ -36,7 +36,7 @@ class PostDeploy(object):
         loader = PackageLoader("isotoma.recipe.postdeploy", "templates")
         template = Environment(loader=loader).get_template("buildout.yay.j2")
 
-        open(self.buildoutyay, "w").write(template.render(self.buildout))
+        open(self.buildoutyay, "w").write(template.render(buildout=self.buildout))
         self.options.created(self.buildoutyay)
 
     def write_config(self):
