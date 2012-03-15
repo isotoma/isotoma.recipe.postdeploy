@@ -18,9 +18,9 @@ your post-deployment configuration with your buildout and just call
 Mandatory Parameters
 --------------------
 
-template
-    A jinja2 template containing your post deployment steps in the Yaybu
-    configuration format.
+config
+    A Yay file to apply to this computer. It will have access to metadata in
+    your buildout.
 
 
 Optional Parameters

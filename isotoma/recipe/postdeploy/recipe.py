@@ -29,7 +29,6 @@ class PostDeploy(object):
 
         self.partsdir = os.path.join(buildout['buildout']['parts-directory'], name)
         self.buildoutyay = os.path.join(self.partsdir, "buildout.yay")
-        self.config = os.path.join(self.partsdir, "postdeploy.yay")
 
     def write_buildout_yay(self):
         """ Write out a buildout.yay based on the current buildout """
@@ -38,16 +37,6 @@ class PostDeploy(object):
 
         open(self.buildoutyay, "w").write(template.render(buildout=self.buildout))
         self.options.created(self.buildoutyay)
-
-    def write_config(self):
-        """ Write the config out, using the jinja2 templating method """
-        dirname, basename = os.path.split(self.options['template'])
-
-        loader = FileSystemLoader(dirname)
-        template = Environment(loader=loader).get_template(basename)
-
-        open(self.config, "w").write(template.render(self.options))
-        self.options.created(self.config)
 
     def create_bin(self):
         path = self.buildout["buildout"]["bin-directory"]
@@ -59,7 +48,7 @@ class PostDeploy(object):
         dependencies = ["Yaybu", "isotoma.recipe.postdeploy"]
 
         params = [
-            "'%s'" % self.config,
+            "[%s]" % ",".join("'%s'" % c for c in [self.buildoutyay,self.options['config']]),
             "['%s']" % self.partsdir,
             ]
         args = ",".join(params)
@@ -74,7 +63,6 @@ class PostDeploy(object):
         self.options.created(self.partsdir)
 
         self.write_buildout_yay()
-        self.write_config()
         self.create_bin()
 
         return self.options.created()

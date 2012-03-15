@@ -47,7 +47,12 @@ def expand(argv, config, searchpath):
     opts.simulate = False
     opts.env_passthrough = []
 
-    ctx = runcontext.RunContext(config, opts)
+    c = yay.Config(searchpath=searchpath)
+    for cfg in config:
+        c.load_uri(cfg)
+
+    ctx = runcontext.RunContext(None, opts)
+    ctx.set_config(c)
     cfg = ctx.get_config().get()
 
     if opts.verbose <= 2:
@@ -75,8 +80,13 @@ def _do(argv, config, searchpath, simulate=True):
     opts.host = None
     opts.env_passthrough = []
 
+    c = yay.Config(searchpath=searchpath)
+    for cfg in config:
+        c.load_uri(cfg)
+
     r = runner.Runner()
-    ctx = runcontext.RunContext(config, opts)
+    ctx = runcontext.RunContext(None, opts)
+    ctx.set_confnig(cfg)
     return r.run(ctx)
 
 
