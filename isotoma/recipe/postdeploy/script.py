@@ -21,7 +21,31 @@ import sys
 import os
 import optparse
 import yay
-from yaybu.core import runner, runcontext
+from yaybu.core import runner, runcontext, error
+
+class ArgumentError(error.ParseError):
+    """ Error parsing an argument passed on the command line """
+    pass
+
+
+def args_to_dict(argv):
+    rv = {}
+    for arg in argv:
+        if not "=" in arg:
+            raise ArgumentError("Expression '%s' must contain an '='" % arg)
+        path, val = arg.split("=")
+        path, val = path.strip(), val.strip()
+
+        segments = path.split(".")
+        d = rv
+        for seg in segments[:-1]:
+            d = d.setdefault(seg, {})
+            if not isinstance(d, dict):
+                raise ArgumentError("'%s' is not a valid location to store that value" % arg)
+
+        d[segments[-1]] = val
+
+    return rv
 
 
 def version(argv, config, searchpath):
@@ -37,7 +61,7 @@ def version(argv, config, searchpath):
 def expand(argv, config, searchpath):
     p = optparse.OptionParser()
     p.add_option("-v", "--verbose", default=2, action="count",  help="Write additional informational messages to the console log. repeat for even more verbosity.")
-    opts, args = p.parse_args()
+    opts, args = p.parse_args(argv)
 
     opts.resume = False
     opts.no_resume = False
@@ -50,6 +74,7 @@ def expand(argv, config, searchpath):
     c = yay.Config(searchpath=searchpath)
     for cfg in config:
         c.load_uri(cfg)
+    c.add(args_to_dict(args))
 
     ctx = runcontext.RunContext(None, opts)
     ctx.set_config(c)
@@ -71,7 +96,7 @@ def _do(argv, config, searchpath, simulate=True):
     p.add_option("-v", "--verbose", default=2, action="count", help="Write additional informational messages to the console log. repeat for even more verbosity.")
     p.add_option("--resume", default=False, action="store_true", help="Resume from saved events if terminated abnormally")
     p.add_option("--no-resume", default=False, action="store_true", help="Clobber saved event files if present and do not resume")
-    opts, args = p.parse_args()
+    opts, args = p.parse_args(argv)
 
     opts.simulate = simulate
     opts.ypath = searchpath
@@ -83,6 +108,7 @@ def _do(argv, config, searchpath, simulate=True):
     c = yay.Config(searchpath=searchpath)
     for cfg in config:
         c.load_uri(cfg)
+    c.add(args_to_dict(args))
 
     r = runner.Runner()
     ctx = runcontext.RunContext(None, opts)
