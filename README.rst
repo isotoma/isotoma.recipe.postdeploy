@@ -7,15 +7,21 @@ management. It provides the power of a full configuration management system
 
 You can:
 
- * Use it as a way to check a task is complete using its "simulate" mode.
+ * Use it as a way to check a task is complete using its "simulate" mode. If
+   someone forgets to symlink in a new config file, simulate will show you!
 
- * More for feels being manually modified outside of your buildout process.
+ * Monitor for files being manually modified outside of your buildout process.
+   Wire the simulate command into Nagios and alert when the exit code isn't 254
+   as that means your service needs attention!
 
- * Automate tasks that you normally run after buildout that require elevated
- * priveleges.
+ * And obviously, automate tasks that you normally run after buildout that
+   require elevated priveleges such as setting up log rotation, enabling apache
+   vhosts and setting up cron jobs.
 
 Of course it can be called by another configuration management tool like
 Puppet, Chef or even another Yaybu instance when you are ready to level up.
+This is a great pattern to let your main server CM worry about the big picture
+and the CM shipped with your buildout worry about the little details.
 
 
 Basic use
