@@ -1,1 +1,2 @@
 include *.rst *.txt
+recursive-include isotoma/recipe/postdeploy/templates *.j2
