@@ -15,6 +15,66 @@ your post-deployment configuration with your buildout and just call
 ``postdeploy`` from your main configuration management tool.
 
 
+Basic use
+---------
+
+Consider a simple yaybu configuration::
+
+    resources.append:
+        - Execute:
+            name: some-script
+            command: ${buildout.buildout.directory}/bin/somescript
+            user: root
+            creates: ${buildout.buildout.directory}/stuff.cfg
+
+You could wire this into buildout like so::
+
+    [buildout]
+    parts =
+        postdeploy
+
+    [postdeploy]
+    recipe = isotoma.recipe.postdeploy
+    config = config.yay
+
+To look at the 'expanded' form of your configuration - with all the variables
+filled in - you can now (after running buildout) do::
+
+    $ ./bin/postdeploy show
+    resources:
+      - Execute:
+          name: /var/somedir/bin/somescript
+          user: root
+          creates: /var/somedir/stuff.cfg
+
+This command optionally takes ``-v`` which shows a more verbose dump of your
+configuration.
+
+You can simulate what would happen if the config was applied without harming
+the system using the ``simulate`` command::
+
+    $ ./bin/postdeploy simulate
+    /---------------------------- Execute[some-script] -----------------------------
+    | # /var/somedir/bin/somescript
+    \-------------------------------------------------------------------------------
+
+This command will have an exit code of 254 if it thinks no changes are
+required, 0 if it successfully simulated applying some changes and anything
+else indicates a problem with your configuration. It makes an ideal monitoring
+tool as it can warn of manual hacks or incomplete deployments.
+
+Finally you can apply the configuration with ``apply``::
+
+    $ ./bin/postdeploy simulate
+    /---------------------------- Execute[some-script] -----------------------------
+    | # /var/somedir/bin/somescript
+    | Here is the stdout from your command
+    | ....
+    | ....
+    | Success!
+    \-------------------------------------------------------------------------------
+
+
 Mandatory Parameters
 --------------------
 

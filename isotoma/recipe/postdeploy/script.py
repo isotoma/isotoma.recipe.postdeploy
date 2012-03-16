@@ -136,7 +136,7 @@ def main(config, searchpath, argv=None):
     argv = argv[1:]
 
     funcs = dict(
-        expand = expand,
+        show = expand,
         simulate = simulate,
         apply = apply,
         version = version,
