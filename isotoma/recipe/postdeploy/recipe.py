@@ -95,6 +95,5 @@ class PostDeploy(object):
 
         return self.options.created()
 
-    def update(self):
-        pass
+    update = install
 
