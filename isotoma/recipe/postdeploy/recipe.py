@@ -35,11 +35,13 @@ class PostDeploy(object):
         self.buildoutyay = os.path.join(self.partsdir, "buildout.yay")
 
     def write_removed_yay(self):
-        removed = get_values_removed_from_lists(
-            self.options['history.db'],
-            self.buildout,
-            self.options.get_list("history.track"),
-            )
+        removed = {}
+        if "history.track" in self.options:
+            removed = get_values_removed_from_lists(
+                self.options['history.db'],
+                self.buildout,
+                self.options.get_list("history.track"),
+                )
 
         loader = PackageLoader("isotoma.recipe.postdeploy", "templates")
         template = Environment(loader=loader).get_template("history.yay.j2")
@@ -52,7 +54,7 @@ class PostDeploy(object):
         loader = PackageLoader("isotoma.recipe.postdeploy", "templates")
         template = Environment(loader=loader).get_template("buildout.yay.j2")
 
-        open(self.buildoutyay, "w").write(template.render(buildout=self.buildout))
+        open(self.buildoutyay, "w").write(template.render(buildout=self.buildout._data))
         self.options.created(self.buildoutyay)
 
     def create_bin(self):

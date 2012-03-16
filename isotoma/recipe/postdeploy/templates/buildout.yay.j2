@@ -1,15 +1,15 @@
 buildout:
 {% for part in buildout.keys() %}
 
-    {{ part }}:
+    {{ part|replace('.','_') }}:
         {% for key in buildout[part] -%}
         {% if '\n' in buildout[part][key] -%}
         {{ key|replace(".","_") }}:
-            {%- for itm in buildout[part].get_list(key) %}
-            - {{ itm }}
+            {%- for itm in buildout[part].get_list(key) if not "${" in itm %}
+            - {{ itm|replace('*','\*')|replace('$', '$$') }}
             {%- endfor %}
-        {% else -%}
-        {{ key|replace(".","_") }}: {{ buildout[part][key] }}
+        {% elif "${" not in buildout[part][key] -%}
+        {{ key|replace(".","_") }}: {{ buildout[part][key]|replace('*','\*')|replace('$','$$') }}
         {% endif -%}
         {% endfor %}
 
