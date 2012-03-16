@@ -1,18 +1,21 @@
 Post-deploy
 ===========
 
-This recipe is for people who want to automate checking (or actual application)
-of post-buildout deployment steps and havent adopted a configuration management
-system like Yaybu, Puppet or Chef.
+This recipe is for people wanting to ease themselves into configuration
+management. It provides the power of a full configuration management system
+(Yaybu) but in a way that integrates with your buildout configuration.
 
-It takes a template Yaybu configuration and allows you to inject settings from
-your buildout - so the configuration is configured for that one particualar
-deployment. It creates a ``bin/postdeploy`` that you can run with sudo after
-running buildout.
+You can:
 
-When you graduate to server-wide configuration management you can opt to keep
-your post-deployment configuration with your buildout and just call
-``postdeploy`` from your main configuration management tool.
+ * Use it as a way to check a task is complete using its "simulate" mode.
+
+ * More for feels being manually modified outside of your buildout process.
+
+ * Automate tasks that you normally run after buildout that require elevated
+ * priveleges.
+
+Of course it can be called by another configuration management tool like
+Puppet, Chef or even another Yaybu instance when you are ready to level up.
 
 
 Basic use
