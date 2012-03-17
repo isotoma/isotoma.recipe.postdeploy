@@ -4,7 +4,11 @@ Changelog
 0.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Any sections that are simple metadata and not referenced from a part will now
+  be available in postdeploy configuration. Note that if a section isn't
+  referenced by an installed part and uses variables then it can't be included:
+  the act of inspecting it might cause additional buildout recipes to be
+  executed.
 
 
 0.0.1 (2012-03-16)

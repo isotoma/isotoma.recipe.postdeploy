@@ -54,6 +54,17 @@ class PostDeploy(object):
         loader = PackageLoader("isotoma.recipe.postdeploy", "templates")
         template = Environment(loader=loader).get_template("buildout.yay.j2")
 
+        # Trigger any sections that aren't in _data and don't have recipes or ${}
+        # This will get them in to _data as Option objects for next stage.
+        for section in self.buildout:
+            if not section in self.buildout._data:
+                data = self.buildout._raw[section]
+                for key, value in data.items():
+                    if '$' in value:
+                        break
+                else:
+                    self.buildout[section]
+
         open(self.buildoutyay, "w").write(template.render(buildout=self.buildout._data))
         self.options.created(self.buildoutyay)
 
