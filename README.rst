@@ -138,6 +138,24 @@ history.track
     Yaybu will ensure your symlink is removed. This data persists across
     multiple buildouts so is safe even if you forget to run postdeploy.
 
+    There are multiple history types. The default is ``removed``. Another
+    example is ``max`` which will keep track of the largest value a field has
+    ever held. This is useful if you have buildout with a scaleable number of
+    services and want to make sure old services are stopped when you update
+    buildout::
+
+      [postdeploy]
+      history.track =
+          environment:zopes max
+
+    I could then do something like this from my Yaybu configuration::
+
+      .foreach i in range(buildout.environment.zopes, history.environment.zopes):
+        - Execute:
+            name: stop-forgotten-zope-${i}
+            command: kill-command zope${i}
+            unless: some-manual-pid-check
+
 history.db
     You don't normally need to change this setting.
 

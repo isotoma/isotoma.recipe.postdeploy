@@ -5,10 +5,14 @@ history:
         {%- if not v %}
         {{ k }}: []
         {%- else %}
+        {% if v is iterable %}
         {{ k }}:
           {%- for i in v %}
           - {{ i }}
           {% endfor %}
+        {% else %}
+        {{ k }}: {{ v }}
+        {% endif %}
         {% endif %}
         {% endfor %}
     {% endfor %}

@@ -17,7 +17,7 @@ from jinja2 import Environment, PackageLoader, ChoiceLoader, FunctionLoader, Fil
 import zc.buildout
 import missingbits
 
-from isotoma.recipe.postdeploy.history import get_values_removed_from_lists
+from isotoma.recipe.postdeploy.history import get_history
 
 class PostDeploy(object):
 
@@ -37,7 +37,7 @@ class PostDeploy(object):
     def write_removed_yay(self):
         removed = {}
         if "history.track" in self.options:
-            removed = get_values_removed_from_lists(
+            removed = get_history(
                 self.options['history.db'],
                 self.buildout,
                 self.options.get_list("history.track"),

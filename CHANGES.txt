@@ -4,7 +4,25 @@ Changelog
 0.0.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Now supports tracking maximum versions of fields::
+
+      [postdeploy]
+      history.track =
+          environment:zopes max
+
+  The default tracking action is called ``removed``.
+
+  In this example, ``history.environment.zopes`` would be the largest number of
+  zopes this buildout deployment has had. The use case for this is that your
+  buildout just destroyed the start/stop scripts for those olds zopes and you
+  want to make sure they were actually stopped. I could then do something like
+  this from my Yaybu configuration::
+
+    .foreach i in range(buildout.environment.zopes, history.environment.zopes):
+      - Execute:
+          name: stop-forgotten-zope-${i}
+          command: kill-command zope${i}
+          unless: some-manual-pid-check
 
 
 0.0.2 (2012-03-17)
