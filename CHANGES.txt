@@ -4,7 +4,7 @@ Changelog
 0.0.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Process command line options first.
 
 
 0.0.3 (2012-03-20)

@@ -72,9 +72,9 @@ def expand(argv, config, searchpath):
     opts.env_passthrough = []
 
     c = yay.Config(searchpath=searchpath)
+    c.add(args_to_dict(args))
     for cfg in config:
         c.load_uri(cfg)
-    c.add(args_to_dict(args))
 
     ctx = runcontext.RunContext(None, opts)
     ctx.set_config(c)
@@ -106,9 +106,9 @@ def _do(argv, config, searchpath, simulate=True):
     opts.env_passthrough = []
 
     c = yay.Config(searchpath=searchpath)
+    c.add(args_to_dict(args))
     for cfg in config:
         c.load_uri(cfg)
-    c.add(args_to_dict(args))
 
     r = runner.Runner()
     ctx = runcontext.RunContext(None, opts)
