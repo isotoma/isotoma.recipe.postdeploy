@@ -1,5 +1,6 @@
 buildout:
 {% for part in buildout.keys() %}
+{% if buildout[parts].keys()|length > 0 %}
 
     {{ part|replace('.','_')|replace("-", "_") }}:
         {% for key in buildout[part] -%}
@@ -13,4 +14,5 @@ buildout:
         {% endif -%}
         {% endfor %}
 
+{%- endif %}
 {%- endfor %}
