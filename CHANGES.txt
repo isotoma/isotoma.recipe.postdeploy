@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.0.6 (unreleased)
+0.0.6 (2012-04-08)
 ------------------
 
 - Nothing changed yet.
