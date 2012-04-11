@@ -1,0 +1,12 @@
+language: python
+
+install:
+  - python bootstrap.py
+  - ./bin/buildout
+
+script:
+  - ./bin/postdeploy shoe
+  - ./bin/postdeploy show -v
+  - ./bin/postdeploy simulate
+  - ./bin/postdeploy apply
+
